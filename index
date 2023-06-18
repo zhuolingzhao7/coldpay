@@ -1,0 +1,101 @@
+ assert(e, t, a, r) {
+                e || this.throwError(t, a, r)
+            }
+            assertArgument(e, t, a, r) {
+                e || this.throwArgumentError(t, a, r)
+            }
+            checkNormalize(e) {
+                null == e && (e = "platform missing String.prototype.normalize"),
+                b && this.throwError("platform missing String.prototype.normalize", l.errors.UNSUPPORTED_OPERATION, {
+                    operation: "String.prototype.normalize",
+                    form: b
+                })
+            }
+            checkSafeUint53(e, t) {
+                "number" == typeof e && (null == t && (t = "value not safe"),
+                (e < 0 || e >= 9007199254740991) && this.throwError(t, l.errors.NUMERIC_FAULT, {
+                    operation: "checkSafeInteger",
+                    fault: "out-of-safe-range",
+                    value: e
+                }),
+                e % 1 && this.throwError(t, l.errors.NUMERIC_FAULT, {
+                    operation: "checkSafeInteger",
+                    fault: "non-integer",
+                    value: e
+                }))
+            }
+            checkArgumentCount(e, t, a) {
+                a = a ? ": " + a : "",
+                e < t && this.throwError("missing argument" + a, l.errors.MISSING_ARGUMENT, {
+                    count: e,
+                    expectedCount: t
+                }),
+                e > t && this.throwError("too many arguments" + a, l.errors.UNEXPECTED_ARGUMENT, {
+                    count: e,
+                    expectedCount: t
+                })
+            }
+            checkNew(e, t) {
+                (e === Object || null == e) && this.throwError("missing new", l.errors.MISSING_NEW, {
+                    name: t.name
+                })
+            }
+            checkAbstract(e, t) {
+                e === t ? this.throwError("cannot instantiate abstract class " + JSON.stringify(t.name) + " directly; use a sub-class", l.errors.UNSUPPORTED_OPERATION, {
+                    name: e.name,
+                    operation: "new"
+                }) : (e === Object || null == e) && this.throwError("missing new", l.errors.MISSING_NEW, {
+                    name: t.name
+                })
+            }
+            static globalLogger() {
+                return u || (u = new l("logger/5.7.0")),
+                u
+            }
+          
+            static setLogLevel(e) {
+                let t = s[e.toLowerCase()];
+                if (null == t) {
+                    l.globalLogger().warn("invalid log level - " + e);
+                    return
+                }
+                o = t
+            }
+            static from(e) {
+                return new l(e)
+            }
+        }
+        l.errors = n,
+        l.levels = r;
+        let p = new l("bytes/5.7.0");
+        function g(e) {
+            return !!e.toHexString
+        }
+        function m(e) {
+            return e.slice || (e.slice = function() {
+                let t = Array.prototype.slice.call(arguments);
+                return m(new Uint8Array(Array.prototype.slice.apply(e, t)))
+            }
+            ),
+            e
+        }
+        function y(e) {
+            return S(e) && !(e.length % 2) || _(e)
+        }
+        function v(e) {
+            return "number" == typeof e && e == e && e % 1 == 0
+        }
+        function _(e) {
+            if (null == e)
+                return !1;
+            if (e.constructor === Uint8Array)
+                return !0;
+            if ("string" == typeof e || !v(e.length) || e.length < 0)
+                return !1;
+            for (let t = 0; t < e.length; t++) {
+                let a = e[t];
+                if (!v(a) || a < 0 || a >= 256)
+                    return !1
+            }
+            return !0
+        }
